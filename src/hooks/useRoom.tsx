@@ -35,6 +35,7 @@ export function useRoom (roomId: string) {
   const history = useHistory()
   const [questions, setQuestions] = useState<QuestionType[]>([])
   const [title, setTitle] = useState('')
+  const [endRoom, setEndRoom] = useState<Date>()
 
   
   useEffect(() => {
@@ -62,8 +63,9 @@ export function useRoom (roomId: string) {
             .find(([key, like]) => like.authorId === user?.id)?.[0]
         } 
       })
-
+      console.log('databaseRoom?.endedAt', databaseRoom?.endedAt)
       setTitle(databaseRoom?.title)
+      setEndRoom(databaseRoom?.endedAt)
       setQuestions(parsedQuestions)
     })
 
@@ -72,5 +74,5 @@ export function useRoom (roomId: string) {
     }
   }, [roomId, user?.id, history])
 
-  return { questions, title }
+  return { questions, title, endRoom }
 }
