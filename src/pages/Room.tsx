@@ -148,6 +148,7 @@ export function Room () {
                 > 
                   {!question?.isAnswered && (
                     <button 
+                      disabled={!user}
                       className={`like-button ${question.likeId ? 'liked' : ''}`}
                       type="button"
                       aria-label="Marcar como gostei"
