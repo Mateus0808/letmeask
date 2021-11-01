@@ -9,11 +9,13 @@ import { useAuth } from '../hooks/useAuth'
 import '../styles/auth.scss'
 import { FormEvent, useState } from 'react'
 import { database } from '../services/firebase'
+import { ErrorModal } from '../components/ErrorModal'
 
 export function Home() {
   const history = useHistory()
   const { user, signInWithGoogle } = useAuth()
   const [roomCode, setRoomCode] = useState('')
+  const [closedRoomModal, setClosedRoomModal] = useState(false)
 
   async function handleCreateRoom () {
     if(!user) {
@@ -33,12 +35,12 @@ export function Home() {
     const roomRef = await database.ref(`rooms/${roomCode}`).get()
 
     if (!roomRef.exists()) {
-      alert('Room does not exists.')
+      setClosedRoomModal(!closedRoomModal)
       return
     }
 
     if (roomRef.val().endedAt) {
-      alert('Room already closed.')
+      setClosedRoomModal(!closedRoomModal)
       return;
     }
 
@@ -47,6 +49,14 @@ export function Home() {
 
   return (
     <div id="page-auth">
+      { closedRoomModal && 
+        <ErrorModal 
+          open={closedRoomModal}
+          title="Sala não encontrada"
+          body="Verifique o id ou se a sala ainda não foi encerrada."
+          handleSetModal={setClosedRoomModal}
+        />
+      }
       <aside>
         <img src={ilustrationImg} alt="Ilustração simbolizando perguntas e respostas" />
         <strong>Crie salas Q&amp;A ao-vivo</strong>
@@ -72,7 +82,7 @@ export function Home() {
             </Button>
           </form>
         </div>
-      </main>
+      </main> 
     </div>
   )
 }
