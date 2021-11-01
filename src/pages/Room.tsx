@@ -1,16 +1,17 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
-import logoImg from '../assets/images/logo.svg'
+
 import { Button } from '../components/Button'
 import { Question } from '../components/Question'
 import { RoomCode } from '../components/RoomCode'
 import { useRoom } from '../hooks/useRoom'
 import { useAuth } from '../hooks/useAuth'
 import { database } from '../services/firebase'
-
-import '../styles/room.scss'
 import { EmptyState } from '../components/EmptyState'
 import { ErrorModal } from '../components/ErrorModal'
+import logoImg from '../assets/images/logo.svg'
+
+import '../styles/room.scss'
 
 type RoomParams = {
   id: string
@@ -18,7 +19,7 @@ type RoomParams = {
 
 export function Room () {
   const history = useHistory()
-  const { user } = useAuth()
+  const { user, signInWithGoogle } = useAuth()
   const params = useParams<RoomParams>()
   const [newQuestion, setNewQuestion] = useState('')
   const [checkEndRoom, setCheckEndRoom] = useState(false)
@@ -53,6 +54,13 @@ export function Room () {
     setNewQuestion('')
   }
 
+  async function handleSignInWithGoogle () {
+    if (!user) {
+      await signInWithGoogle()
+    }
+    history.push(`/rooms/${roomId}`)
+  }
+
   useEffect(() => {
     async function handleEndRoom() {
       if(endRoom) {
@@ -67,7 +75,6 @@ export function Room () {
     history.push('/')
   }
   
-
   async function handleLikeQuestion (questionId: string, likeId: string | undefined) {
     if (likeId) {
       await database.ref(`/rooms/${roomId}/questions/${questionId}/likes/${likeId}`).remove()
@@ -112,11 +119,16 @@ export function Room () {
           <div className="form-footer">
             { user ? (
               <div className="user-info">
-                <img src={user.avatar} alt={user.name} />
-                <span>{user.name}</span>
+                <img src={user?.avatar} alt={user?.name} />
+                <span>{user?.name}</span>
               </div>
             ) : (
-              <span>Para enviar uma pergunta, <button>faça seu login</button></span>
+              <span>
+                Para enviar uma pergunta, {' '} 
+                <button onClick={handleSignInWithGoogle}>
+                  faça seu login
+                </button>
+              </span>
             )}
             <Button type="submit" disabled={!user}>Enviar pergunta</Button>
           </div>
