@@ -14,6 +14,7 @@ import '../styles/room.scss'
 import { database } from '../services/firebase'
 import { useState } from 'react'
 import { Modal } from '../components/Modal'
+import { EmptyState } from '../components/EmptyState'
 
 type RoomParams = {
   id: string
@@ -81,50 +82,57 @@ export function AdminRoom () {
         </div>
 
         <div className="question-list">
-          {questions.map(question => {
-            return (
-              <Question 
-                content={question.content}
-                author={question.author}
-                key={question.id}
-                isAnswered={question.isAnswered}
-                isHighlighted={question.isHighlighted}
-              >
-                {!question?.isAnswered &&(
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => handleCheckQuestionAsAnswered(question?.id)}
-                    >
-                      <img src={checkImg} alt="Marcar como respondida" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleHighlightQuestion(question?.id)}
-                    >
-                      <img src={answerImg} alt="Marcar pergunta como respondida" />
-                    </button>
-                  </>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setModalDelete(!modalDelete)}
+          {questions.length > 0
+          ? (
+            questions.map(question => {
+              return (
+                <Question 
+                  content={question.content}
+                  author={question.author}
+                  key={question.id}
+                  isAnswered={question.isAnswered}
+                  isHighlighted={question.isHighlighted}
                 >
-                  <img src={deleteImg} alt="Dar destaque à pergunta" />
-                </button>
-                {modalDelete && 
-                  <Modal
-                    open={modalDelete}
-                    handleSetModal={setModalDelete}
-                    onClick={() => handleDeleteQuestion(question.id)}
-                    title="Excluir pergunta"
-                    body="Tem certeza que deseja excluir esta pergunta?"
-                    buttonText="excluir"
-                  />
-                }
-              </Question>
-            )
-          })}
+                  {!question?.isAnswered &&(
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handleCheckQuestionAsAnswered(question?.id)}
+                      >
+                        <img src={checkImg} alt="Marcar como respondida" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleHighlightQuestion(question?.id)}
+                      >
+                        <img src={answerImg} alt="Marcar pergunta como respondida" />
+                      </button>
+                    </>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setModalDelete(!modalDelete)}
+                  >
+                    <img src={deleteImg} alt="Dar destaque à pergunta" />
+                  </button>
+                  {modalDelete && 
+                    <Modal
+                      open={modalDelete}
+                      handleSetModal={setModalDelete}
+                      onClick={() => handleDeleteQuestion(question.id)}
+                      title="Excluir pergunta"
+                      body="Tem certeza que deseja excluir esta pergunta?"
+                      buttonText="excluir"
+                    />
+                  }
+                </Question>
+              )
+          })
+          ) : (
+            <div className="admin-empty-question">
+              <EmptyState />
+            </div>
+          )}
         </div>
       </main>
     </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useHistory } from "react-router"
 import { database } from "../services/firebase"
 import { useAuth } from "./useAuth"
 
@@ -31,16 +32,24 @@ type QuestionType = {
 
 export function useRoom (roomId: string) {
   const { user } = useAuth()
+  const history = useHistory()
   const [questions, setQuestions] = useState<QuestionType[]>([])
   const [title, setTitle] = useState('')
 
-
+  
   useEffect(() => {
     const roomRef = database.ref(`rooms/${roomId}`)
+    
+    function checkIfRoomExists (room: any) {
+      if(!room) {
+        history.push('/')
+      }
+    }
 
     roomRef.on('value', room => {
+      checkIfRoomExists(room.val())
       const databaseRoom = room.val()
-      const firebaseQuestions: FirebaseQuestion = databaseRoom.questions ?? {}
+      const firebaseQuestions: FirebaseQuestion = databaseRoom?.questions ?? {}
       const parsedQuestions = Object.entries(firebaseQuestions).map(([key, value]) => {
         return {
           id: key,
@@ -54,14 +63,14 @@ export function useRoom (roomId: string) {
         } 
       })
 
-      setTitle(databaseRoom.title)
+      setTitle(databaseRoom?.title)
       setQuestions(parsedQuestions)
     })
 
     return () => {
       roomRef.off('value')
     }
-  }, [roomId, user?.id])
+  }, [roomId, user?.id, history])
 
   return { questions, title }
 }

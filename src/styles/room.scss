@@ -106,6 +106,14 @@
     }
     .question-list {
       margin-top: 32px;
+
+      .room-empty-question {
+        margin-top: 64px;
+      }
+
+      .admin-empty-question {
+        margin-top: 134px;
+      }
     }
   }
 }
