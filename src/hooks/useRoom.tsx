@@ -63,7 +63,7 @@ export function useRoom (roomId: string) {
             .find(([key, like]) => like.authorId === user?.id)?.[0]
         } 
       })
-      console.log('databaseRoom?.endedAt', databaseRoom?.endedAt)
+      
       setTitle(databaseRoom?.title)
       setEndRoom(databaseRoom?.endedAt)
       setQuestions(parsedQuestions)

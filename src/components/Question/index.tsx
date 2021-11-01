@@ -28,8 +28,8 @@ export function Question ({
       <p>{content}</p>
       <footer>
         <div className="user-info">
-          <img src={author.avatar} alt={author.name} />
-          <span>{author.name}</span>
+          <img src={author.avatar} alt={author?.name} />
+          <span>{author?.name}</span>
         </div>
         <div>
           {children}

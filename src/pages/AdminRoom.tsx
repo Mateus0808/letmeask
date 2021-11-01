@@ -1,20 +1,19 @@
+import { useState } from 'react'
 import { useHistory, useParams } from 'react-router'
-import logoImg from '../assets/images/logo.svg'
+
 import { Button } from '../components/Button'
 import { Question } from '../components/Question'
 import { RoomCode } from '../components/RoomCode'
 import { useRoom } from '../hooks/useRoom'
-
+import { database } from '../services/firebase'
+import { Modal } from '../components/Modal'
+import { EmptyState } from '../components/EmptyState'
+import logoImg from '../assets/images/logo.svg'
 import deleteImg from '../assets/images/delete.svg'
 import checkImg from '../assets/images/check.svg'
 import answerImg from '../assets/images/answer.svg'
 
-
 import '../styles/room.scss'
-import { database } from '../services/firebase'
-import { useState } from 'react'
-import { Modal } from '../components/Modal'
-import { EmptyState } from '../components/EmptyState'
 
 type RoomParams = {
   id: string
