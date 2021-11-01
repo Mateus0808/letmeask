@@ -1,5 +1,5 @@
-import { FormEvent, useState } from 'react'
-import { useParams } from 'react-router'
+import { FormEvent, useEffect, useState } from 'react'
+import { useHistory, useParams } from 'react-router'
 import logoImg from '../assets/images/logo.svg'
 import { Button } from '../components/Button'
 import { Question } from '../components/Question'
@@ -10,19 +10,23 @@ import { database } from '../services/firebase'
 
 import '../styles/room.scss'
 import { EmptyState } from '../components/EmptyState'
+import { ErrorModal } from '../components/ErrorModal'
 
 type RoomParams = {
   id: string
 }
 
 export function Room () {
+  const history = useHistory()
   const { user } = useAuth()
   const params = useParams<RoomParams>()
   const [newQuestion, setNewQuestion] = useState('')
+  const [checkEndRoom, setCheckEndRoom] = useState(false)
   const roomId = params.id
   
   const { title, questions } = useRoom(roomId)
-
+  let { endRoom } = useRoom(roomId)
+  
   async function handleSendQuestion (event: FormEvent) {
     event.preventDefault()
 
@@ -49,6 +53,21 @@ export function Room () {
     setNewQuestion('')
   }
 
+  useEffect(() => {
+    async function handleEndRoom() {
+      if(endRoom) {
+        setCheckEndRoom(!checkEndRoom)
+      }
+    }
+    handleEndRoom()
+  }, [endRoom])
+
+
+  function refirectToHome () {
+    history.push('/')
+  }
+  
+
   async function handleLikeQuestion (questionId: string, likeId: string | undefined) {
     if (likeId) {
       await database.ref(`/rooms/${roomId}/questions/${questionId}/likes/${likeId}`).remove()
@@ -61,6 +80,15 @@ export function Room () {
 
   return (
     <div id="page-room">
+      {checkEndRoom && (
+        <ErrorModal 
+          open={checkEndRoom}
+          title="Sala encerrada"
+          body="A sala foi encerrada. Muito obrigado por participar!"
+          handleSetModal={setCheckEndRoom}
+          onClick={refirectToHome}
+        />
+      )}
       <header>
         <div className="content">
           <img src={logoImg} alt="Letmeaks" />
