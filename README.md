@@ -24,7 +24,7 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 - [TypeScript](https://www.typescriptlang.org/)
 - [Sass](https://sass-lang.com/)
 - [React Modal](https://reactcommunity.org/react-modal/)
-- Context API
+- [Context API](https://pt-br.reactjs.org/docs/context.html)
 ## 🚀 Como executar
 
 Clone o projeto e acesse a pasta do mesmo.
